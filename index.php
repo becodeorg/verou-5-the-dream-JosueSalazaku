@@ -17,12 +17,8 @@ $currenciesRate = (object) [
     'BIF' => 3120.31
 ];
 
-foreach ($currenciesRate as $currency => &$rate) {
-    $rate = number_format($rate, 2);
-}
-
 function currencyChange($currency, $amount) {
-    global $currenciesRate; 
+    global $currenciesRate;
     if (isset($currenciesRate->$currency)) {
         $convertedAmount = $amount * $currenciesRate->$currency;
         return $convertedAmount;
@@ -31,6 +27,11 @@ function currencyChange($currency, $amount) {
     }
 }
 
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $amount = isset($_POST['amount']) ? $_POST['amount'] : '';
+    $convertedAmount = currencyChange('EURO', $amount);
+}
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +39,7 @@ function currencyChange($currency, $amount) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Currency exchange app</title>
+    <title>Currency Conversion app</title>
 </head>
 <style>
 
@@ -60,7 +61,6 @@ main {
     align-items: center;
 }
 
-
 form {
     display: flex;
     flex-direction: row;
@@ -74,7 +74,6 @@ input {
     font-size: 20px;
     border-radius: 12px;
     border: none;
-    
 }
 
 button {
@@ -86,21 +85,26 @@ button {
     border-radius: 12px;
     border: none;
     background: blue;
+    color: white;
+    cursor: pointer;
 }
 </style>
 <body>
     <main>
-    <h2>Currency Conversion</h2>
+        <h2>Currency Conversion</h2>
         <?php foreach ($currenciesRate as $currency => $rate): ?>
-            <?php echo "$currency:$rate"; ?>
-            <?php echo "$convertedAmount"; ?>
+            <?php echo "$currency: $rate"; ?>
         <?php endforeach; ?>
+        
+        <?php if (isset($convertedAmount)): ?>
+            <p>Converted Amount: <?php echo $convertedAmount; ?></p>
+        <?php endif; ?>
+
         <form action="index.php" method="post">
             <input type="number" name="amount">
             <br>
-            <button onclick="<?php echo 'var_dump(' . currencyChange('EURO', 1) . ');'; ?>">post</button>
+            <button type="submit">Convert</button>
         </form>
-
     </main>
 </body>
 </html>
