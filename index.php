@@ -1,7 +1,5 @@
 <?php
-// var_dump($_POST);
-
-
+var_dump($_POST);
 
 $currencies = (object) [
     'EURO' => 'EURO',
@@ -23,12 +21,16 @@ foreach ($currenciesRate as $currency => &$rate) {
     $rate = number_format($rate, 2);
 }
 
-var_dump($rate);
-
-
 function currencyChange($currency, $amount) {
+    global $currenciesRate; 
+    if (isset($currenciesRate->$currency)) {
+        $convertedAmount = $amount * $currenciesRate->$currency;
+        return $convertedAmount;
+    } else {
+        return "Invalid currency";
+    }
+}
 
-};
 ?>
 
 <!DOCTYPE html>
@@ -42,25 +44,63 @@ function currencyChange($currency, $amount) {
 
 body {
     background: gray;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Poppins', sans-serif;
 }
 
 main {
     margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
+
 
 form {
     display: flex;
     flex-direction: row;
     gap: 7px; 
+    padding: 20px;
+}
+
+input {
+    width: 250px;   
+    height: 40px;   
+    font-size: 20px;
+    border-radius: 12px;
+    border: none;
+    
+}
+
+button {
+    display: flex;
+    flex-direction: column;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    border: none;
+    background: blue;
 }
 </style>
 <body>
     <main>
+    <h2>Currency Conversion</h2>
+        <?php foreach ($currenciesRate as $currency => $rate): ?>
+            <?php echo "$currency:$rate"; ?>
+            <?php echo "$convertedAmount"; ?>
+        <?php endforeach; ?>
         <form action="index.php" method="post">
             <input type="number" name="amount">
             <br>
-            <button>post</button>
+            <button onclick="<?php echo 'var_dump(' . currencyChange('EURO', 1) . ');'; ?>">post</button>
         </form>
+
     </main>
 </body>
 </html>
