@@ -17,20 +17,24 @@ $currenciesRate = (object) [
     'BIF' => 3120.31
 ];
 
-function currencyChange($currency, $amount) {
-    global $currenciesRate;
+// Default values
+$amount = 1;  // Default amount
+$currency = 'EURO';  // Default currency
+
+// Check if the form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Retrieve the form data
+    $amount = isset($_POST['amount']) ? $_POST['amount'] : '';
+    $currency = isset($_POST['currency']) ? $_POST['currency'] : 'EURO';
+}
+
+function currencyChange($amount, $currency, $currenciesRate) {
     if (isset($currenciesRate->$currency)) {
         $convertedAmount = $amount * $currenciesRate->$currency;
         return $convertedAmount;
     } else {
         return "Invalid currency";
     }
-}
-
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $amount = isset($_POST['amount']) ? $_POST['amount'] : '';
-    $convertedAmount = currencyChange('EURO', $amount);
 }
 ?>
 
@@ -92,19 +96,22 @@ button {
 <body>
     <main>
         <h2>Currency Conversion</h2>
-        <?php foreach ($currenciesRate as $currency => $rate): ?>
-            <?php echo "$currency: $rate"; ?>
+        <?php foreach ($currenciesRate as $currencyKey => $rate): ?>
+            <?php echo "$currencyKey: $rate"; ?>
         <?php endforeach; ?>
         
-        <?php if (isset($convertedAmount)): ?>
-            <p>Converted Amount: <?php echo $convertedAmount; ?></p>
-        <?php endif; ?>
-
         <form action="index.php" method="post">
-            <input type="number" name="amount">
+            <input type="number" name="amount" value="<?php echo $amount; ?>">
+            <select name="currency">
+                <?php foreach ($currencies as $currencyKey => $currencyName): ?>
+                    <option value="<?php echo $currencyKey; ?>" <?php echo ($currencyKey == $currency) ? 'selected' : ''; ?>><?php echo $currencyName; ?></option>
+                <?php endforeach; ?>
+            </select>
             <br>
             <button type="submit">Convert</button>
         </form>
+
+        <p>Converted Amount: <?php echo currencyChange($amount, $currency, $currenciesRate); ?></p>
     </main>
 </body>
 </html>
