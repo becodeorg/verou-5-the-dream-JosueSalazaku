@@ -1,12 +1,10 @@
 <?php
-var_dump($_POST);
-
 $currencies = (object) [
     'EURO' => 'EURO',
     'USD' => 'AMERICAN DOLLARS',
     'JPY' => 'JAPANESE YEN',
     'AOA' => 'ANGOLAN KWANZA',
-    'BIF' => 'Burundian Francs'
+    'BIF' => 'BURUNDIAN FRANCS'
 ];
 
 $currenciesRate = (object) [
@@ -17,13 +15,10 @@ $currenciesRate = (object) [
     'BIF' => 3120.31
 ];
 
-// Default values
-$amount = 1;  // Default amount
-$currency = 'EURO';  // Default currency
+$amount = 1;  
+$currency = 'EURO';  
 
-// Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Retrieve the form data
     $amount = isset($_POST['amount']) ? $_POST['amount'] : '';
     $currency = isset($_POST['currency']) ? $_POST['currency'] : 'EURO';
 }
@@ -54,7 +49,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    font-family: 'Poppins', sans-serif;
+    font-family: sans-serif;
 }
 
 main {
@@ -77,7 +72,16 @@ input {
     height: 40px;   
     font-size: 20px;
     border-radius: 12px;
-    border: none;
+    border: 2px solid blue;
+    background: none;
+}
+
+select {
+    border-radius: 15px;
+    width: 80px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 button {
@@ -92,26 +96,27 @@ button {
     color: white;
     cursor: pointer;
 }
+
+h1 {
+    color: white;
+    font-weight: 500;
+}
 </style>
 <body>
     <main>
-        <h2>Currency Conversion</h2>
-        <?php foreach ($currenciesRate as $currencyKey => $rate): ?>
-            <?php echo "$currencyKey: $rate"; ?>
-        <?php endforeach; ?>
+        <h1>Currency Conversion</h1>
         
         <form action="index.php" method="post">
             <input type="number" name="amount" value="<?php echo $amount; ?>">
             <select name="currency">
-                <?php foreach ($currencies as $currencyKey => $currencyName): ?>
-                    <option value="<?php echo $currencyKey; ?>" <?php echo ($currencyKey == $currency) ? 'selected' : ''; ?>><?php echo $currencyName; ?></option>
+                <?php foreach ($currencies as $currencyCode => $currencyName): ?>
+                    <option value="<?php echo $currencyCode; ?>" <?php echo ($currencyCode == $currency) ? 'selected' : ''; ?>><?php echo $currencyName; ?></option>
                 <?php endforeach; ?>
             </select>
             <br>
             <button type="submit">Convert</button>
         </form>
-
-        <p>Converted Amount: <?php echo currencyChange($amount, $currency, $currenciesRate); ?></p>
+        <h2>Converted Amount: <?php echo currencyChange($amount, $currency, $currenciesRate); ?></h2>
     </main>
 </body>
 </html>
