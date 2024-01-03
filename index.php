@@ -1,11 +1,6 @@
 <?php
-var_dump($_POST);
+// var_dump($_POST);
 
-// $euroCurrency = 1;
-// $americanDollars = 1.10;
-// $japansesYen = 156.20;
-// $angolanKwanza = 911.87;
-// $burundianFrancs = 3122.99;
 
 
 $currencies = (object) [
@@ -24,8 +19,11 @@ $currenciesRate = (object) [
     'BIF' => 3120.31
 ];
 
+foreach ($currenciesRate as $currency => &$rate) {
+    $rate = number_format($rate, 2);
+}
 
-echo $currencies;
+var_dump($rate);
 
 
 function currencyChange($currency, $amount) {
